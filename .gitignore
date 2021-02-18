@@ -50,6 +50,7 @@ lib/generated_plugin_registrant.dart
 **/android/**/GeneratedPluginRegistrant.java
 
 **/build/
+**/note/
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
