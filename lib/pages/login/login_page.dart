@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:lomaysowda/config/validators.dart';
 import 'package:lomaysowda/pages/profile/profile_page.dart';
 import 'package:lomaysowda/pages/profile/provider/user_provider.dart';
-import 'package:lomaysowda/utils/navigator.dart';
 import 'package:lomaysowda/widgets/my_appbar.dart';
 import 'package:lomaysowda/widgets/my_custom_button.dart';
 import 'package:lomaysowda/widgets/my_textformfield.dart';
@@ -27,10 +26,21 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class LoginPageContainer extends StatelessWidget {
+class LoginPageContainer extends StatefulWidget {
+  @override
+  _LoginPageContainerState createState() => _LoginPageContainerState();
+}
+
+class _LoginPageContainerState extends State<LoginPageContainer> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final TextEditingController _usernameController = TextEditingController();
+  String savedName;
+  String nameError;
+
   final TextEditingController _passwordController = TextEditingController();
+  String savedPassword;
+  String passwordError;
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +52,13 @@ class LoginPageContainer extends StatelessWidget {
           'email': _usernameController.text,
           'password': _passwordController.text,
         };
-        await state.login(data: data);
-        if (state.isLoggedIn) {
-          Future.delayed(Duration(milliseconds: 250), () {
-            MyNavigator.pushAndRemove(ProfilePage());
-          });
-        } else {
-          print('tazeden synansh (login).');
+        final res = await state.login(data: data);
+        print(res);
+        if (res) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => ProfilePage()),
+              (route) => false);
         }
       } else {
         print('form validation failed');
@@ -65,13 +75,25 @@ class LoginPageContainer extends StatelessWidget {
                 MyTextFormField(
                   controller: _usernameController,
                   validator: validateName,
+                  onChanged: (v) {
+                    setState(() {});
+                  },
+                  onSaved: (v) => savedName = v,
                   hintText: 'Username',
                 ),
+                const SizedBox(height: 12),
                 MyTextFormField(
                   controller: _passwordController,
                   validator: validatePassword,
+                  onChanged: (v) {
+                    if (passwordError != null) {
+                      setState(() => passwordError = null);
+                    }
+                  },
+                  onSaved: (v) => savedPassword = v,
                   hintText: 'Password',
                 ),
+                const SizedBox(height: 8),
                 state.loading
                     ? CupertinoActivityIndicator()
                     : MyCustomButton(

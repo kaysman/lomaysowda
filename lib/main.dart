@@ -30,7 +30,7 @@ void main() async {
               create: (_) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
             ),
             ChangeNotifierProvider(
-              create: (_) => UserProvider(isLoggedIn: isLogin ?? false),
+              create: (_) => UserProvider(),
             ),
           ],
           child: LOMAYAPP(lang: selectedLang),
@@ -58,7 +58,7 @@ class LOMAYAPP extends StatelessWidget {
       locale:
           lang == null ? Get.deviceLocale : Locale(lang, lang.toUpperCase()),
       fallbackLocale: Locale('ru', 'RU'),
-      title: "Iki Nokat Application",
+      title: "Lomaysowda Application",
       defaultTransition: Transition.fade,
       debugShowCheckedModeBanner: false,
       initialBinding: LanguageBinding(),

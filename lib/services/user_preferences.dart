@@ -17,10 +17,4 @@ class UserPreferences {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   }
-
-  getLogin() async {
-    var prefs = await SharedPreferences.getInstance();
-    var logged = prefs.getBool('loggedin');
-    return logged;
-  }
 }

@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'component/results.dart';
 import 'component/suggestions.dart';
 
-class SearchPage extends SearchDelegate {
-  SearchPage()
+class Searchdelegate extends SearchDelegate {
+  Searchdelegate()
       : super(
           searchFieldLabel: 'search_bar_label'.tr,
           keyboardType: TextInputType.text,

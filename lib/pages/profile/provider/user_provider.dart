@@ -4,18 +4,17 @@ import 'package:lomaysowda/services/user_preferences.dart';
 
 class UserProvider with ChangeNotifier {
   bool loading;
-  bool isLoggedIn;
-  UserProvider({this.isLoggedIn}) {
+  UserProvider() {
     loading = false;
   }
 
-  Future<void> login({Map<String, String> data}) async {
+  Future<bool> login({Map<String, String> data}) async {
     loading = true;
     notifyListeners();
     bool res = await LoginAPI.loginService(data: data);
-    isLoggedIn = res;
     loading = false;
     notifyListeners();
+    return res;
   }
 
   Future<void> logout({Map<String, String> data}) async {
@@ -23,7 +22,6 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
     await UserPreferences().saveToken(null);
     await UserPreferences().saveLogin(null);
-    isLoggedIn = false;
     loading = false;
     notifyListeners();
   }

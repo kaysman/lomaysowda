@@ -109,13 +109,16 @@ class GridProducts extends StatelessWidget {
 
   Widget _buildLabel(BuildContext context, String title) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10.0),
+      margin: EdgeInsets.only(bottom: 16.0),
       child: Row(
         children: [
           Expanded(
             child: Text(
               label.tr,
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headline5.copyWith(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ),
         ],

@@ -70,55 +70,61 @@ class SuppierPart extends StatelessWidget {
       margin: EdgeInsets.only(top: 10, bottom: 10),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Color(0xffeeeeee),
+          color: Colors.black26,
         ),
         borderRadius: BorderRadius.circular(5.0),
       ),
-      child: ListTile(
-        leading: buildAvatar(avatar),
-        title: Text(name),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(phone),
-            Text(email),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => UrlLauncher.launch("tel:+$phone"),
-                    child: SvgPicture.asset(
-                      'assets/icons/call.svg',
-                      height: 28,
-                      color: Theme.of(context).accentColor,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: MyCustomButton(
-                      onTap: () => _buildOrderForm(context, state),
-                      text: 'productd_order'.tr,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: MyCustomButton(
-                      onTap: () {
-                        MyNavigator.push(
-                          SupplierPage(
-                            id: state.productDetail.supplier_id,
-                          ),
-                        );
-                      },
-                      text: 'productd_all_products'.tr,
-                    ),
-                  ),
-                ],
-              ),
+      child: Column(
+        children: [
+          ListTile(
+            leading: buildAvatar(avatar),
+            title: Text(name),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(phone),
+                Text(email),
+              ],
             ),
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 8),
+            child: Row(
+              children: [
+                const SizedBox(width: 15),
+                GestureDetector(
+                  onTap: () => UrlLauncher.launch("tel:+$phone"),
+                  child: SvgPicture.asset(
+                    'assets/icons/call.svg',
+                    height: 28,
+                    color: Theme.of(context).accentColor,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: MyCustomButton(
+                    onTap: () => _buildOrderForm(context, state),
+                    text: 'productd_order'.tr,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  flex: 2,
+                  child: MyCustomButton(
+                    onTap: () {
+                      MyNavigator.push(
+                        SupplierPage(
+                          id: state.productDetail.supplier_id,
+                        ),
+                      );
+                    },
+                    text: 'productd_all_products'.tr,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

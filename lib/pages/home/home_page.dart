@@ -77,6 +77,11 @@ class _HomePageContainerState extends State<HomePageContainer>
                         ),
                       ),
 
+                      // padding
+                      SliverToBoxAdapter(
+                        child: SizedBox(height: 12),
+                      ),
+
                       // vip products
                       SliverToBoxAdapter(
                         child: GridProducts(
@@ -85,12 +90,22 @@ class _HomePageContainerState extends State<HomePageContainer>
                         ),
                       ),
 
+                      // padding
+                      SliverToBoxAdapter(
+                        child: SizedBox(height: 12),
+                      ),
+
                       // trand products
                       SliverToBoxAdapter(
                         child: GridProducts(
                           label: 'trand_products',
                           products: state.trandProducts,
                         ),
+                      ),
+
+                      // padding
+                      SliverToBoxAdapter(
+                        child: SizedBox(height: 12),
                       ),
 
                       SliverToBoxAdapter(

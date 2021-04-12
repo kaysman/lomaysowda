@@ -7,7 +7,6 @@ import 'package:lomaysowda/pages/login/login_page.dart';
 import 'package:lomaysowda/pages/profile/components/select_language.dart';
 import 'package:lomaysowda/pages/profile/provider/theme_provider.dart';
 import 'package:lomaysowda/pages/profile/provider/user_provider.dart';
-import 'package:lomaysowda/services/user_preferences.dart';
 import 'package:lomaysowda/utils/navigator.dart';
 import 'package:lomaysowda/widgets/label_section.dart';
 import 'package:lomaysowda/widgets/my_appbar.dart';
@@ -22,24 +21,27 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool isLogged;
-  _checkLogin() async {
-    await UserPreferences().getLogin().then((value) {
-      setState(() {
-        isLogged = value;
-      });
-    });
-  }
+  Future<SharedPreferences> prefsFuture;
 
-  @override
-  void initState() {
-    super.initState();
-    _checkLogin();
+  Widget buildContent(BuildContext context, SharedPreferences prefs) {
+    final token = prefs?.getString('token');
+    return token != null ? ProfilePage() : LoginPage();
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLogged ? ProfilePageContainer() : LoginPage();
+    if (prefsFuture == null) {
+      prefsFuture = SharedPreferences.getInstance();
+    }
+    return FutureBuilder<SharedPreferences>(
+      future: prefsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return buildContent(context, snapshot.data);
+        }
+        return const SizedBox.shrink();
+      },
+    );
   }
 }
 
