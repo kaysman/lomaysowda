@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' as GetLocale;
+import 'package:lomaysowda/config/extensions.dart';
 import 'package:lomaysowda/config/validators.dart';
 import 'package:lomaysowda/pages/category/provider/category_provider.dart';
 import 'package:lomaysowda/pages/login/login_page.dart';
@@ -12,11 +13,8 @@ import 'package:lomaysowda/pages/view_my_products/products_page.dart';
 import 'package:lomaysowda/pages/add_product/provider/addproduct_provider.dart';
 import 'package:lomaysowda/pages/add_product/provider/image_provider.dart';
 import 'package:lomaysowda/pages/profile/provider/user_provider.dart';
-import 'package:lomaysowda/utils/navigator.dart';
 import 'package:lomaysowda/widgets/my_appbar.dart';
-import 'package:lomaysowda/widgets/my_custom_button.dart';
 import 'package:lomaysowda/widgets/my_loading.dart';
-import 'package:lomaysowda/widgets/my_textformfield.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
@@ -40,35 +38,28 @@ class ProductAddPageContainer extends StatefulWidget {
 class _ProductAddPageContainerState extends State<ProductAddPageContainer> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   //
-  TextEditingController _nameController;
-  TextEditingController _priceController;
-  TextEditingController _quantityController;
-  TextEditingController _keywordController;
-  TextEditingController _descripController;
-  String _category, _brand, _unit;
+  TextEditingController _nameController = TextEditingController();
+  String savedName;
+  String nameError;
+
+  TextEditingController _priceController = TextEditingController();
+  String savedPrice;
+  String priceError;
+
+  TextEditingController _quantityController = TextEditingController();
+  String savedQuantity;
+  String quantityError;
+
+  TextEditingController _keywordController = TextEditingController();
+  String savedKeyword;
+  String keywordError;
+
+  TextEditingController _descripController = TextEditingController();
+  String savedDesc;
+  String descError;
+
+  String _selectedCategory, _selectedBrand, _selectedUnit;
   List<File> _images = [];
-
-  @override
-  void initState() {
-    super.initState();
-    // controllers
-    _nameController = TextEditingController();
-    _priceController = TextEditingController();
-    _quantityController = TextEditingController();
-    _keywordController = TextEditingController();
-    _descripController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    // controllers
-    _nameController.dispose();
-    _priceController.dispose();
-    _quantityController.dispose();
-    _keywordController.dispose();
-    _descripController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,16 +77,20 @@ class _ProductAddPageContainerState extends State<ProductAddPageContainer> {
     final units = cat_state.units.map((e) => e.getName(langCode)).toList();
 
     /// login function
-    var _submit = () async {
+    var onSubmit = () async {
+      hideKeyboard();
       final form = _formKey.currentState;
       if (form.validate()) {
         form.save();
 
+        AddProductProvider _state =
+            Provider.of<AddProductProvider>(context, listen: false);
+
         Map<String, dynamic> data = {
           'name_tm': _nameController.text,
-          'cat_id': categories.indexOf(_category) + 1,
-          'brand_id': brands.indexOf(_brand) + 1,
-          'unit_id': units.indexOf(_unit) + 1,
+          'cat_id': categories.indexOf(_selectedCategory) + 1,
+          'brand_id': brands.indexOf(_selectedBrand) + 1,
+          'unit_id': units.indexOf(_selectedUnit) + 1,
         };
 
         if (imagestate.img1 != null) {
@@ -114,22 +109,30 @@ class _ProductAddPageContainerState extends State<ProductAddPageContainer> {
         Map<String, List<MultipartFile>> fileMap = {"images": []};
         for (File file in _images) {
           String filename = basename(file.path);
-          fileMap['images'].add(MultipartFile(
-            file.openRead(),
-            await file.length(),
-            filename: filename,
-          ));
+          fileMap['images'].add(
+            MultipartFile(
+              file.openRead(),
+              await file.length(),
+              filename: filename,
+            ),
+          );
+        }
+        if (fileMap['images'].isNotEmpty) {
+          data.addAll(fileMap);
+        } else {
+          showSnackbar(context, "Surat yukle");
+          return;
         }
 
-        data.addAll(fileMap);
         var formData = FormData.fromMap(data);
-        AddProductProvider state =
-            Provider.of<AddProductProvider>(context, listen: false);
-        await state.addUserProduct(formData);
-        if (state.isAdded) {
-          MyNavigator.push(MyProductsPage());
+
+        var res = await _state.addUserProduct(formData);
+        showSnackbar(context, res.toString());
+        if (_state.isAdded) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => MyProductsPage()));
         } else {
-          print('haryt goshulmady, product_add_page:111');
+          print('haryt goshulmady, product_add_page');
         }
       } else {
         print('form validation failed');
@@ -139,118 +142,216 @@ class _ProductAddPageContainerState extends State<ProductAddPageContainer> {
     return Scaffold(
       appBar: MyAppBar(
         context: context,
+        title: Text('add_new_product'.tr),
         leadingType: AppBarBackType.None,
       ),
-      body: state.loading
-          ? MyLoadingWidget()
-          : GestureDetector(
-              onTap: () {
-                FocusScopeNode currentFocus = FocusScope.of(context);
-                if (!currentFocus.hasPrimaryFocus) {
-                  currentFocus.unfocus();
-                }
-              },
-              child: Container(
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    padding: EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      top: 16,
-                      bottom: 8,
-                    ),
+      body: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: SingleChildScrollView(
+          child: Container(
+            padding:
+                const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 38),
+            child: Form(
+              key: _formKey,
+              child: Card(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          UploadSection(number: 1),
-                          UploadSection(number: 2),
-                          UploadSection(number: 3),
+                          Expanded(child: UploadSection(number: 1)),
+                          const SizedBox(width: 8),
+                          Expanded(child: UploadSection(number: 2)),
+                          const SizedBox(width: 8),
+                          Expanded(child: UploadSection(number: 3)),
                         ],
                       ),
-                      MyTextFormField(
+                      const SizedBox(height: 16),
+                      TextFormField(
                         controller: _nameController,
+                        keyboardType: TextInputType.name,
+                        textCapitalization: TextCapitalization.words,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          labelText: 'add_name'.tr,
+                          errorText: nameError,
+                        ),
                         validator: validateName,
-                        // labelText: 'add_name'.tr,
-                        hintText: 'your_name'.tr,
-                        onChanged: (v) {},
-                        onSaved: (v) {},
+                        onChanged: (v) {
+                          if (nameError != null) {
+                            setState(() => nameError = null);
+                          }
+                        },
+                        onSaved: (v) => savedName = v,
                       ),
-                      MyTextFormField(
-                        controller: _priceController,
-                        validator: validatePassword,
-                        // labelText: 'add_price'.tr,
-                        hintText: 'product_price'.tr,
-                        onChanged: (v) {},
-                        onSaved: (v) {},
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _priceController,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                labelText: 'add_price'.tr,
+                                errorText: priceError,
+                              ),
+                              onChanged: (v) {
+                                if (priceError != null) {
+                                  setState(() => priceError = null);
+                                }
+                              },
+                              onSaved: (v) => savedPrice = v,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _quantityController,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                labelText: 'add_min'.tr,
+                                errorText: quantityError,
+                              ),
+                              onChanged: (v) {
+                                if (quantityError != null) {
+                                  setState(() => quantityError = null);
+                                }
+                              },
+                              onSaved: (v) => savedQuantity = v,
+                            ),
+                          )
+                        ],
                       ),
-                      MyTextFormField(
-                        controller: _quantityController,
-                        validator: validatePassword,
-                        // labelText: 'add_min'.tr,
-                        hintText: 'minimum_quantity'.tr,
-                        onChanged: (v) {},
-                        onSaved: (v) {},
-                      ),
-                      MyTextFormField(
+                      const SizedBox(height: 8),
+                      TextFormField(
                         controller: _keywordController,
-                        validator: validatePassword,
-                        // labelText: 'add_keywords'.tr,
-                        hintText: 'product_keywords'.tr,
-                        onChanged: (v) {},
-                        onSaved: (v) {},
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          labelText: 'add_keywords'.tr,
+                          errorText: keywordError,
+                        ),
+                        onChanged: (v) {
+                          if (keywordError != null) {
+                            setState(() => keywordError = null);
+                          }
+                        },
+                        onSaved: (v) => savedKeyword = v,
                       ),
-                      MyTextFormField(
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          value: _selectedCategory,
+                          onChanged: (v) {
+                            setState(() {
+                              _selectedCategory = v;
+                            });
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'add_category'.tr,
+                          ),
+                          items: List.generate(
+                            categories.length,
+                            (i) {
+                              final category = categories[i];
+                              return DropdownMenuItem(
+                                child: Text(category),
+                                value: category,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        value: _selectedBrand,
+                        onChanged: (v) {
+                          setState(() {
+                            _selectedBrand = v;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'add_brand'.tr,
+                        ),
+                        items: List.generate(
+                          brands.length,
+                          (i) {
+                            final brand = brands[i];
+                            return DropdownMenuItem(
+                              child: Text(brand),
+                              value: brand,
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        value: _selectedUnit,
+                        onChanged: (v) {
+                          setState(() {
+                            _selectedUnit = v;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'add_unit'.tr,
+                        ),
+                        items: List.generate(
+                          units.length,
+                          (i) {
+                            final unit = units[i];
+                            return DropdownMenuItem(
+                              child: Text(unit),
+                              value: unit,
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
                         controller: _descripController,
-                        validator: validatePassword,
-                        // labelText: 'add_desc'.tr,
-                        hintText: 'product_desc'.tr,
-                        onChanged: (v) {},
-                        onSaved: (v) {},
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                          labelText: 'add_desc'.tr,
+                          errorText: descError,
+                        ),
+                        onChanged: (v) {
+                          if (descError != null) {
+                            setState(() => descError = null);
+                          }
+                        },
+                        onSaved: (v) => savedDesc = v,
                       ),
-                      // MyDropDown(
-                      //   list: categories,
-                      //   currentSelected: _category,
-                      //   labelText: 'add_category'.tr,
-                      //   hintText: 'select_category'.tr,
-                      //   onChanged: (value) {
-                      //     setState(() {
-                      //       _category = value;
-                      //     });
-                      //   },
-                      // ),
-
-                      /// user brands
-                      // MyDropDown(
-                      //   list: brands,
-                      //   currentSelected: _brand,
-                      //   labelText: 'add_brand'.tr,
-                      //   hintText: 'select_brand'.tr,
-                      //   onChanged: (value) {
-                      //     setState(() {
-                      //       _brand = value;
-                      //     });
-                      //   },
-                      // ),
-                      // MyDropDown(
-                      //   list: units,
-                      //   currentSelected: _unit,
-                      //   labelText: 'add_unit'.tr,
-                      //   hintText: 'select_unit'.tr,
-                      //   onChanged: (value) {
-                      //     setState(() {
-                      //       _unit = value;
-                      //     });
-                      //   },
-                      // ),
-                      Consumer<UserProvider>(
+                      const SizedBox(height: 8),
+                      Consumer<AddProductProvider>(
                         builder: (_, state, child) {
-                          return state.loading
-                              ? MyLoadingWidget()
-                              : MyCustomButton(
-                                  onTap: _submit,
-                                  text: 'add_product_add'.tr,
-                                );
+                          return ElevatedButton(
+                            onPressed: onSubmit,
+                            child: AnimatedSwitcher(
+                                duration: Duration(milliseconds: 100),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    if (state.loading) MyLoadingWidget(),
+                                    Text(
+                                      'add_product_add'.tr,
+                                    ),
+                                  ],
+                                )),
+                          );
                         },
                       ),
                     ],
@@ -258,6 +359,25 @@ class _ProductAddPageContainerState extends State<ProductAddPageContainer> {
                 ),
               ),
             ),
+          ),
+        ),
+      ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // controllers
+    _nameController.dispose();
+    _priceController.dispose();
+    _quantityController.dispose();
+    _keywordController.dispose();
+    _descripController.dispose();
+    super.dispose();
   }
 }

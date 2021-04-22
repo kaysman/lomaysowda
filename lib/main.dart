@@ -29,8 +29,8 @@ void main() async {
           providers: [
             ChangeNotifierProvider(create: (_) => MainProvider()),
             ChangeNotifierProvider(
-                create: (_) =>
-                    ThemeNotifier(darkModeOn ? darkTheme : lightTheme)),
+              create: (_) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
+            ),
             ChangeNotifierProvider(create: (_) => CategoryProvider()),
             ChangeNotifierProvider(create: (_) => UserProvider(user: isLogged)),
             ChangeNotifierProvider(create: (_) => AddProductProvider()),

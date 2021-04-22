@@ -11,19 +11,9 @@ class MyCustomButton extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      color: Theme.of(context).accentColor,
-      padding: EdgeInsets.all(5),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
+    return ElevatedButton(
       onPressed: onTap,
-      child: Text(
-        text.toLowerCase(),
-        style: Theme.of(context).textTheme.bodyText1.copyWith(
-              color: Theme.of(context).primaryColor,
-            ),
-      ),
+      child: Text(text.toUpperCase()),
     );
   }
 }

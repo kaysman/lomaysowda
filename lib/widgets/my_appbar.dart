@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lomaysowda/pages/search/search_page.dart';
-
 import 'my_search_delegate.dart';
 
 /// appbar
@@ -30,12 +28,12 @@ class MyAppBar extends AppBar implements PreferredSizeWidget {
                 margin: EdgeInsets.only(left: 10.0),
                 child: Image.asset(
                   "assets/icons/amazon.png",
-                  width: 95,
-                  color: Theme.of(context).accentColor,
+                  width: 86,
+                  height: 46,
+                  color: Colors.white,
                 ),
               ),
           centerTitle: centerTitle,
-          backgroundColor: backgroundColor,
           leading: leading ??
               (leadingType == AppBarBackType.None
                   ? null
@@ -50,10 +48,10 @@ class MyAppBar extends AppBar implements PreferredSizeWidget {
               },
               child: Container(
                 margin: EdgeInsets.only(right: 15, bottom: 5),
-                height: 45,
+                height: 30,
                 child: SvgPicture.asset(
                   "assets/icons/search.svg",
-                  color: Theme.of(context).accentColor,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -63,7 +61,7 @@ class MyAppBar extends AppBar implements PreferredSizeWidget {
           bottom: bottom,
         );
   @override
-  get preferredSize => Size.fromHeight(bottom == null ? 44 : 92);
+  get preferredSize => Size.fromHeight(46);
 }
 
 class AppBarBack extends StatelessWidget {
@@ -89,7 +87,7 @@ class AppBarBack extends StatelessWidget {
               margin: EdgeInsets.only(right: 15, left: 15),
               child: Image.asset(
                 'assets/icons/nav_back.png',
-                color: Theme.of(context).accentColor,
+                color: Colors.white,
               ),
             ),
     );

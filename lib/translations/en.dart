@@ -9,6 +9,10 @@ final Map<String, String> en = {
   'empty': 'empty',
   'negotiable': 'negotiable',
   'upload': 'upload',
+  'gallery': 'Gallery',
+  'camera': 'Camera',
+  'personal': 'Personal',
+  'logout_content': 'Would you really like to logout?',
 
   // add page
   "add_new_product": "New Product",

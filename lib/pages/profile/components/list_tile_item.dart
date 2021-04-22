@@ -26,24 +26,26 @@ class ListTileItem extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 iconData,
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .color
+                    .withOpacity(0.8),
                 height: 25,
               ),
               SizedBox(width: 15),
               Text(
-                title,
-                style: Theme.of(context).textTheme.headline6.copyWith(
-                      color: Theme.of(context).accentColor,
-                    ),
+                title.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodyText1
+                      .color
+                      .withOpacity(0.8),
+                ),
               ),
-              // Spacer(),
-              // Text(
-              //   count?.toString() ?? '',
-              //   style: TextStyle(
-              //     fontSize: 15.0,
-              //     color: Theme.of(context).accentColor.withOpacity(0.8),
-              //   ),
-              // ),
             ],
           ),
         ),

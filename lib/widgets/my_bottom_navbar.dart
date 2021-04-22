@@ -64,8 +64,8 @@ class MyBottomNavigationBar extends StatelessWidget {
           selector: (_, model) => model.getTabBarSelectedIndex,
         ),
         Divider(
-          height: 0.5,
-          color: Theme.of(context).primaryColor.withOpacity(0.5),
+          height: 0.3,
+          color: Color(0x85949292),
         ),
       ],
     );
@@ -92,7 +92,7 @@ class MyBottomNavigationBar extends StatelessWidget {
               image,
               width: _tabBarIconWidth,
               height: _tabBarIconHeight,
-              color: Theme.of(context).accentColor.withOpacity(0.5),
+              color: const Color(0xFFBBBBBA),
             ),
           ],
         ),
@@ -103,7 +103,7 @@ class MyBottomNavigationBar extends StatelessWidget {
             selectedImage,
             width: _tabBarIconWidth,
             height: _tabBarIconHeight,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
           ),
         ],
       ),

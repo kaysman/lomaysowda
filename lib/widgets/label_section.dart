@@ -43,7 +43,8 @@ class LeftTitle extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              color: Theme.of(context).accentColor,
+              color:
+                  Theme.of(context).textTheme.bodyText1.color.withOpacity(0.5),
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),

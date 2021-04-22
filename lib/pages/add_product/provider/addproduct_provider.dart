@@ -8,11 +8,11 @@ class AddProductProvider with ChangeNotifier {
   Future addUserProduct(data, {bool refresh = false}) async {
     loading = true;
     notifyListeners();
-    bool response = await UserApi.addUserProduct(params: data);
-    isAdded = response;
-    print(response);
+    var response = await UserApi.addUserProduct(params: data);
+    isAdded = response == 'Haryt üstünlikli goşuldy';
     loading = false;
     notifyListeners();
+    return response;
   }
 }
 

@@ -100,6 +100,7 @@ class RequestUtil {
           requestOptions = requestOptions.merge(headers: _authorization);
         }
       }
+
       var response = await dio.get(
         path,
         queryParameters: params,
@@ -133,8 +134,10 @@ class RequestUtil {
           requestOptions = requestOptions.merge(headers: _authorization);
         }
       }
+
       var response =
           await dio.post(path, data: params, options: requestOptions);
+
       return response.data;
     } on DioError catch (e) {
       return {'error': e};
@@ -185,17 +188,25 @@ class RequestUtil {
   }
 
   ///  post form Form submission operation
-  Future postForm(String path, {dynamic params, Options options}) async {
+  Future postForm(String path,
+      {dynamic params, Options options, auth = false}) async {
     Options requestOptions = options ?? Options();
 
-    /// The following three lines of code are the
-    /// operation of obtaining the token and then merging it into the header
-    // Map<String, dynamic> _authorization = getAuthorizationHeader();
-    // if (_authorization != null) {
-    //   requestOptions = requestOptions.merge(headers: _authorization);
-    // }
-    var response = await dio.post(path,
-        data: FormData.fromMap(params), options: requestOptions);
+    if (auth) {
+      var token = await getAuthorizationHeader();
+
+      if (token == null) return;
+
+      Map<String, dynamic> _authorization = {
+        "Authorization": "Bearer $token",
+      };
+
+      if (_authorization != null) {
+        requestOptions = requestOptions.merge(headers: _authorization);
+      }
+    }
+
+    var response = await dio.post(path, data: params, options: requestOptions);
     return response.data;
   }
 }

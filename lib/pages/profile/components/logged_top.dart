@@ -1,15 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lomaysowda/pages/profile/provider/user_provider.dart';
-import 'package:lomaysowda/widgets/custom_dialog.dart';
+import 'package:lomaysowda/utils/navigator.dart';
 import 'package:lomaysowda/widgets/my_cached_image.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 
-class LoggedProfileTop extends StatelessWidget {
-  final BuildContext current_context;
+class LoggedProfileTop extends StatefulWidget {
+  const LoggedProfileTop({Key key}) : super(key: key);
 
-  const LoggedProfileTop({Key key, this.current_context}) : super(key: key);
+  @override
+  _LoggedProfileTopState createState() => _LoggedProfileTopState();
+}
+
+class _LoggedProfileTopState extends State<LoggedProfileTop> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -23,8 +27,8 @@ class LoggedProfileTop extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.lightBlue,
-            Colors.blueAccent,
+            Color(0xFF79479f),
+            Color(0xFF6D319B),
           ],
         ),
         borderRadius: BorderRadius.only(
@@ -59,41 +63,16 @@ class LoggedProfileTop extends StatelessWidget {
                       fontSize: 20,
                       fontWeight: FontWeight.w600),
                 ),
-                Divider(height: 5),
-                Text(
-                  'Mysal HJ - Telekeci',
-                  style: TextStyle(
-                    color: Theme.of(context).accentColor,
-                    fontSize: 14,
-                  ),
-                ),
+                // Text(
+                //   'Mysal HJ - Telekeci',
+                //   style: TextStyle(
+                //     color: Theme.of(context).accentColor,
+                //     fontSize: 14,
+                //   ),
+                // ),
                 Divider(height: 5),
                 InkWell(
-                  onTap: () {
-                    showDialog(
-                        context: current_context,
-                        builder: (_) {
-                          return CustomDialog(
-                            title: 'logout'.tr,
-                            content: Text(
-                              'logout_content'.tr,
-                            ),
-                            confirmContent: 'yes'.tr,
-                            cancelContent: 'no'.tr,
-                            outsideDismiss: true,
-                            confirmCallback: () async {
-                              UserProvider state = Provider.of<UserProvider>(
-                                context,
-                                listen: false,
-                              );
-                              await state.logout();
-                            },
-                            dismissCallback: () {
-                              // MyNavigator.pop();
-                            },
-                          );
-                        });
-                  },
+                  onTap: alertDialog,
                   child: Text(
                     'logout'.tr,
                     style: Theme.of(context).textTheme.bodyText1.copyWith(
@@ -109,5 +88,43 @@ class LoggedProfileTop extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  alertDialog() async {
+    await showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('logout'.tr),
+            content: Text(
+              'logout_content'.tr,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => MyNavigator.pop(),
+                child: Text('no'.tr),
+                style: ButtonStyle(foregroundColor:
+                    MaterialStateProperty.resolveWith<Color>((states) {
+                  return Theme.of(context).backgroundColor;
+                })),
+              ),
+              TextButton(
+                onPressed: () async {
+                  UserProvider state = Provider.of<UserProvider>(
+                    context,
+                    listen: false,
+                  );
+                  await state.logout();
+                },
+                child: Text('yes'.tr),
+                style: ButtonStyle(foregroundColor:
+                    MaterialStateProperty.resolveWith<Color>((states) {
+                  return Theme.of(context).accentColor;
+                })),
+              ),
+            ],
+          );
+        });
   }
 }

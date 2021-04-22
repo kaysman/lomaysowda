@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:lomaysowda/models/brand.dart';
 import 'package:lomaysowda/models/order.dart';
 import 'package:lomaysowda/models/product.dart';
@@ -11,7 +12,6 @@ class UserApi {
 
   static Future<BrandListModel> getUserBrands(String url) async {
     var response = await RequestUtil().get(url, auth: true);
-    print(response);
     return BrandListModel.fromJson(response['data']);
   }
 
@@ -20,7 +20,19 @@ class UserApi {
     return OrderModelList.fromJson(response['data']);
   }
 
-  static Future<bool> addUserProduct({dynamic params}) async {
-    var response = await RequestUtil().get('', params: params, auth: true);
+  static Future addUserProduct({dynamic params}) async {
+    var response = await RequestUtil().post(
+      'store/product',
+      params: params,
+      auth: true,
+      options: Options(
+        contentType: 'multipart/form-data',
+        followRedirects: false,
+        validateStatus: (status) {
+          return status < 500;
+        },
+      ),
+    );
+    return response['message'];
   }
 }

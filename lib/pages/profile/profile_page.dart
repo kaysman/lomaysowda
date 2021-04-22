@@ -51,9 +51,7 @@ class _ProfilePageContainerState extends State<ProfilePageContainer> {
           SliverToBoxAdapter(
             child: Stack(
               children: [
-                LoggedProfileTop(
-                  current_context: context,
-                ),
+                LoggedProfileTop(),
                 ProfileTileList(),
               ],
             ),

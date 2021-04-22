@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:lomaysowda/pages/add_product/provider/image_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -28,37 +27,30 @@ class _UploadSectionState extends State<UploadSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 8.0,
-        left: 8.0,
-        bottom: 8.0,
-      ),
-      child: Center(
-        child: defaultTargetPlatform == TargetPlatform.android
-            ? FutureBuilder<void>(
-                future: retrieveLostData(),
-                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:
+    return Center(
+      child: defaultTargetPlatform == TargetPlatform.android
+          ? FutureBuilder<void>(
+              future: retrieveLostData(),
+              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return onWaitingWidget();
+                  case ConnectionState.done:
+                    return _previewImage();
+                  default:
+                    if (snapshot.hasError) {
+                      return Text(
+                        'Pick image error: ${snapshot.error}}',
+                        textAlign: TextAlign.center,
+                      );
+                    } else {
                       return onWaitingWidget();
-                    case ConnectionState.done:
-                      return _previewImage();
-                    default:
-                      if (snapshot.hasError) {
-                        return Text(
-                          'Pick image error: ${snapshot.error}}',
-                          textAlign: TextAlign.center,
-                        );
-                      } else {
-                        return onWaitingWidget();
-                      }
-                  }
-                },
-              )
-            : _previewImage(),
-      ),
+                    }
+                }
+              },
+            )
+          : _previewImage(),
     );
   }
 
