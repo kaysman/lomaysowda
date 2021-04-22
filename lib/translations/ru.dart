@@ -8,6 +8,7 @@ final Map<String, String> ru = {
   'no_info': 'нет информации',
   'empty': 'пустой',
   'negotiable': 'договорный',
+  'upload': 'загрузить',
 
   // add page
   "add_new_product": "Новый продукт",

@@ -1,28 +1,32 @@
 import 'package:flutter/widgets.dart';
 import 'package:lomaysowda/services/login_service.dart';
-import 'package:lomaysowda/services/user_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class UserProvider with ChangeNotifier {
-  bool loading;
-  UserProvider() {
-    loading = false;
+class UserProvider extends ChangeNotifier {
+  bool loading = false;
+  bool _user;
+  UserProvider({@required user}) {
+    this._user = user;
   }
 
-  Future<bool> login({Map<String, String> data}) async {
-    loading = true;
+  Future<void> login({Map<String, String> data}) async {
+    this.loading = true;
     notifyListeners();
     bool res = await LoginAPI.loginService(data: data);
-    loading = false;
+    this._user = res;
+    this.loading = false;
     notifyListeners();
-    return res;
   }
 
   Future<void> logout({Map<String, String> data}) async {
-    loading = true;
+    this.loading = true;
     notifyListeners();
-    await UserPreferences().saveToken(null);
-    await UserPreferences().saveLogin(null);
-    loading = false;
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', null);
+    this.loading = false;
+    this._user = false;
     notifyListeners();
   }
+
+  bool get getUser => this._user ?? false;
 }

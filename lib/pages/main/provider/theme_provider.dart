@@ -12,29 +12,43 @@ class CustomTheme with ChangeNotifier {
 
   static ThemeData get lightTheme {
     return ThemeData(
-      primaryColor: Colors.yellow,
-      scaffoldBackgroundColor: Colors.white,
-      fontFamily: 'Montserrat',
-      buttonTheme: ButtonThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18.0),
-        ),
-        buttonColor: Colors.yellowAccent,
+      primarySwatch: Colors.grey,
+      primaryColor: Colors.white,
+      brightness: Brightness.light,
+      accentColor: Colors.black,
+      accentIconTheme: IconThemeData(color: Colors.yellow),
+      dividerColor: Colors.white54,
+      appBarTheme: AppBarTheme(
+        backwardsCompatibility: false,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
+      // This makes the visual density adapt to the platform that you run
+      // the app on. For desktop platforms, the controls will be smaller and
+      // closer together (more dense) than on mobile platforms.
+      visualDensity: VisualDensity.adaptivePlatformDensity,
     );
   }
 
   static ThemeData get darkTheme {
     return ThemeData(
-      primaryColor: CustomColors.darkGrey,
-      scaffoldBackgroundColor: Colors.black,
-      fontFamily: 'Montserrat',
-      textTheme: ThemeData.dark().textTheme,
-      buttonTheme: ButtonThemeData(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-        buttonColor: Colors.purple,
+      primarySwatch: Colors.grey,
+      primaryColor: Colors.white,
+      brightness: Brightness.light,
+      accentColor: Colors.black,
+      accentIconTheme: IconThemeData(color: Colors.yellow),
+      dividerColor: Colors.white54,
+      appBarTheme: AppBarTheme(
+        backwardsCompatibility: false,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
+      // This makes the visual density adapt to the platform that you run
+      // the app on. For desktop platforms, the controls will be smaller and
+      // closer together (more dense) than on mobile platforms.
+      visualDensity: VisualDensity.adaptivePlatformDensity,
     );
   }
 }

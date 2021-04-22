@@ -5,7 +5,6 @@ class ProductsGridAPI {
   static Future<ProductListModel> getProductsData(String route,
       {params}) async {
     var response = await RequestUtil().get(route, params: params);
-    // var response = await RequestUtil().get(route);
     return ProductListModel.fromJson(response['data']);
   }
 

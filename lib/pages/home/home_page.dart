@@ -38,87 +38,80 @@ class _HomePageContainerState extends State<HomePageContainer>
     final state = Provider.of<HomeProvider>(context);
     return state.loading
         ? MyLoadingWidget()
-        : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              child: GestureDetector(
-                onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-                child: SmartRefresher(
-                  controller: state.refreshController,
-                  enablePullUp: true,
-                  onLoading: state.loadData,
-                  onRefresh: () => state.initData(refresh: true),
-                  footer: CustomFooter(
-                    builder: (BuildContext context, LoadStatus mode) {
-                      Widget body;
-                      if (mode == LoadStatus.idle) {
-                        body = Text("has köp ýüklemek üçin çekiň");
-                      } else if (mode == LoadStatus.loading) {
-                        body = CupertinoActivityIndicator();
-                      } else if (mode == LoadStatus.failed) {
-                        body = Text("Gaýtadan synanyşyň!");
-                      } else if (mode == LoadStatus.canLoading) {
-                        body = Text("Has köp ýüklemek üçin goýberiň");
-                      } else {
-                        body = Text("Ählisi...");
-                      }
-                      return Container(
-                        height: 55,
-                        child: Center(child: body),
-                      );
-                    },
-                  ),
-                  child: CustomScrollView(
-                    slivers: <Widget>[
-                      // sliders
-                      SliverToBoxAdapter(
-                        child: HeadSwiper(
-                          bannerList: state.sliders,
+        : GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Container(
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+                  child: SmartRefresher(
+                    controller: state.refreshController,
+                    enablePullUp: true,
+                    onLoading: state.loadData,
+                    onRefresh: () => state.initData(refresh: true),
+                    footer: CustomFooter(
+                      builder: (BuildContext context, LoadStatus mode) {
+                        Widget body;
+                        if (mode == LoadStatus.idle) {
+                          body = Text("has köp ýüklemek üçin çekiň");
+                        } else if (mode == LoadStatus.loading) {
+                          body = CupertinoActivityIndicator();
+                        } else if (mode == LoadStatus.failed) {
+                          body = Text("Gaýtadan synanyşyň!");
+                        } else if (mode == LoadStatus.canLoading) {
+                          body = Text("Has köp ýüklemek üçin goýberiň");
+                        } else {
+                          body = Text("Ählisi...");
+                        }
+                        return Container(
+                          height: 55,
+                          child: Center(child: body),
+                        );
+                      },
+                    ),
+                    child: CustomScrollView(
+                      slivers: <Widget>[
+                        // sliders
+                        SliverToBoxAdapter(
+                          child: HeadSwiper(
+                            bannerList: state.sliders,
+                          ),
                         ),
-                      ),
 
-                      // padding
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: 12),
-                      ),
-
-                      // vip products
-                      SliverToBoxAdapter(
-                        child: GridProducts(
-                          label: 'vip_products',
-                          products: state.vipProducts,
+                        // vip products
+                        SliverToBoxAdapter(
+                          child: GridProducts(
+                            label: 'vip_products',
+                            products: state.vipProducts,
+                          ),
                         ),
-                      ),
 
-                      // padding
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: 12),
-                      ),
-
-                      // trand products
-                      SliverToBoxAdapter(
-                        child: GridProducts(
-                          label: 'trand_products',
-                          products: state.trandProducts,
+                        // trand products
+                        SliverToBoxAdapter(
+                          child: GridProducts(
+                            label: 'trand_products',
+                            products: state.trandProducts,
+                          ),
                         ),
-                      ),
 
-                      // padding
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: 12),
-                      ),
-
-                      SliverToBoxAdapter(
-                        child: GridProducts(
-                          label: 'all_products',
-                          products: state.allProducts,
+                        SliverToBoxAdapter(
+                          child: GridProducts(
+                            label: 'all_products',
+                            products: state.allProducts,
+                          ),
                         ),
-                      ),
 
-                      /// all products by scrolling up
-                    ],
-                    // +
-                    // _hotCommodity(state.hotList),
+                        /// all products by scrolling up
+                      ],
+                      // +
+                      // _hotCommodity(state.hotList),
+                    ),
                   ),
                 ),
               ),

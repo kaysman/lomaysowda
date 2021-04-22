@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lomaysowda/widgets/my_appbar.dart';
 import 'package:lomaysowda/widgets/my_loading.dart';
 import 'package:provider/provider.dart';
-import 'component/detailsection.dart';
+import 'component/supplier_section.dart';
 import 'provider/product_provider.dart';
 import 'package:get/get.dart';
 

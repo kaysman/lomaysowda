@@ -4,13 +4,11 @@ import 'package:flutter_splash_screen/flutter_splash_screen.dart';
 import 'package:lomaysowda/pages/category/category_page.dart';
 import 'package:lomaysowda/pages/home/home_page.dart';
 import 'package:lomaysowda/pages/main/provider/main_provider.dart';
+import 'package:lomaysowda/pages/add_product/product_add_page.dart';
 import 'package:lomaysowda/pages/profile/profile_page.dart';
 import 'package:lomaysowda/utils/navigator.dart';
-import 'package:lomaysowda/widgets/my_appbar.dart';
 import 'package:lomaysowda/widgets/my_bottom_navbar.dart';
 import 'package:provider/provider.dart';
-import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -57,7 +55,7 @@ class _MainPageState extends State<MainPage>
         children: [
           HomePage(),
           CategoryPage(),
-          TestPage2(),
+          ProductAddPage(),
           ProfilePage(),
         ],
       ),
@@ -66,39 +64,4 @@ class _MainPageState extends State<MainPage>
 
   @override
   bool get wantKeepAlive => true;
-}
-
-class TestPage2 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MyAppBar(
-        context: context,
-        leadingType: AppBarBackType.None,
-        title: Text(
-          "search_bar_label".tr,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-        ),
-      ),
-      body: Container(
-        width: double.infinity,
-        color: Theme.of(context).cardColor,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            TextButton(
-                onPressed: () async {
-                  final prefs = await SharedPreferences.getInstance();
-                  prefs.remove('token');
-                },
-                child: Text('Logout')),
-          ],
-        ),
-      ),
-    );
-  }
 }

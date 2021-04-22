@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const SERVER_API_URL = "http://lomaysowda.com.tm/api/";
+const SERVER_API_URL = "http://95.85.122.49/api/";
 
 class RequestUtil {
   static RequestUtil _instance = RequestUtil._internal();
@@ -72,12 +72,13 @@ class RequestUtil {
    */
   getAuthorizationHeader() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('token');
+    return prefs.getString('token');
   }
 
   /// get operating
   Future get(
     String path, {
+    bool auth = false,
     dynamic params,
     Options options,
   }) async {
@@ -86,10 +87,19 @@ class RequestUtil {
 
       /// The following three lines of code are the
       /// operation of obtaining the token and then merging it into the header
-      // Map<String, dynamic> _authorization = {"token": getAuthorizationHeader()};
-      // if (_authorization != null) {
-      //   requestOptions = requestOptions.merge(headers: _authorization);
-      // }
+      if (auth) {
+        var token = await getAuthorizationHeader();
+
+        if (token == null) return;
+
+        Map<String, dynamic> _authorization = {
+          "Authorization": "Bearer $token",
+        };
+
+        if (_authorization != null) {
+          requestOptions = requestOptions.merge(headers: _authorization);
+        }
+      }
       var response = await dio.get(
         path,
         queryParameters: params,
@@ -103,16 +113,26 @@ class RequestUtil {
   }
 
   ///  post operating
-  Future post(String path, {dynamic params, Options options}) async {
+  Future post(String path,
+      {dynamic params, Options options, bool auth = false}) async {
     try {
       Options requestOptions = options ?? Options();
 
       /// The following three lines of code are the
       /// operation of obtaining the token and then merging it into the header
-      // Map<String, dynamic> _authorization = getAuthorizationHeader();
-      // if (_authorization != null) {
-      //   requestOptions = requestOptions.merge(headers: _authorization);
-      // }
+      if (auth) {
+        var token = await getAuthorizationHeader();
+
+        if (token == null) return;
+
+        Map<String, dynamic> _authorization = {
+          "Authorization": "Bearer $token",
+        };
+
+        if (_authorization != null) {
+          requestOptions = requestOptions.merge(headers: _authorization);
+        }
+      }
       var response =
           await dio.post(path, data: params, options: requestOptions);
       return response.data;

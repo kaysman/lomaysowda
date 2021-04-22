@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lomaysowda/pages/search/search_delegate.dart';
+import 'package:lomaysowda/pages/search/search_page.dart';
+
+import 'my_search_delegate.dart';
 
 /// appbar
 enum AppBarBackType { Back, Close, None }
@@ -44,7 +46,7 @@ class MyAppBar extends AppBar implements PreferredSizeWidget {
           actions: [
             InkWell(
               onTap: () {
-                showSearch(context: context, delegate: Searchdelegate());
+                showSearch(context: context, delegate: MySearchDelegate());
               },
               child: Container(
                 margin: EdgeInsets.only(right: 15, bottom: 5),

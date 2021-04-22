@@ -9,6 +9,7 @@ final Map<String, String> tm = {
   'no_info': 'Maglumat ýok',
   'empty': 'boş',
   'negotiable': 'ylalaşykly',
+  'upload': 'ýükle',
 
   // add page
   "add_new_product": "Täze haryt",

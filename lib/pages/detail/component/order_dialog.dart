@@ -17,112 +17,86 @@ class CustomOrderDialog extends StatefulWidget {
 }
 
 class _CustomOrderDialogState extends State<CustomOrderDialog> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  GlobalKey<FormState> _key = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
-  String savedName;
-  String nameError;
-
   TextEditingController _phoneController = TextEditingController();
-  String savedPhone;
-  String phoneError;
-
   TextEditingController _messageController = TextEditingController();
-  String savedMessage;
-  String messageError;
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
+    return AlertDialog(
       elevation: 1.0,
-      child: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 14,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'productd_order_title'.tr,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                SizedBox(height: 14),
-                MyTextFormField(
-                  controller: _nameController,
-                  validator: validateName,
-                  hintText: 'productd_order_name'.tr,
-                  onChanged: (v) {
-                    if (nameError != null) {
-                      setState(() => nameError = null);
-                    }
-                  },
-                  onSaved: (v) => savedName = v,
-                ),
-                SizedBox(height: 14),
-                MyTextFormField(
-                  controller: _phoneController,
-                  validator: validateName,
-                  hintText: 'productd_order_phone'.tr,
-                  onChanged: (v) {
-                    if (phoneError != null) {
-                      setState(() => phoneError = null);
-                    }
-                  },
-                  onSaved: (v) => savedPhone = v,
-                ),
-                SizedBox(height: 14),
-                MyTextFormField(
-                  controller: _messageController,
-                  validator: validateName,
-                  hintText: 'productd_order_message'.tr,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 3,
-                  onChanged: (v) {
-                    if (messageError != null) {
-                      setState(() => messageError = null);
-                    }
-                  },
-                  onSaved: (v) => savedMessage = v,
-                ),
-                SizedBox(height: 14),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MyCustomButton(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      text: 'productd_order_cancel'.tr,
-                    ),
-                    SizedBox(width: 16),
-                    MyCustomButton(
-                      onTap: _sendData,
-                      text: 'productd_order'.tr,
-                    ),
-                  ],
-                )
-              ],
+      scrollable: true,
+      contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 10.0),
+      titlePadding: EdgeInsets.symmetric(horizontal: 24, vertical: 20.0),
+      title: Text(
+        'productd_order_title'.tr,
+        style: Theme.of(context).textTheme.headline6,
+      ),
+      content: Container(
+        width: MediaQuery.of(context).size.width * 0.7,
+        height: MediaQuery.of(context).size.height * 0.35,
+        child: ListView(
+          children: [
+            Form(
+              key: _key,
+              child: Column(
+                children: [
+                  MyTextFormField(
+                    controller: _nameController,
+                    validator: validateName,
+                    hintText: 'productd_order_name'.tr,
+                    onSaved: (v) {},
+                    onChanged: (v) {},
+                  ),
+                  const SizedBox(height: 20),
+                  MyTextFormField(
+                    controller: _phoneController,
+                    validator: validateName,
+                    hintText: 'productd_order_phone'.tr,
+                    onSaved: (v) {},
+                    onChanged: (v) {},
+                  ),
+                  const SizedBox(height: 20),
+                  MyTextFormField(
+                    controller: _messageController,
+                    validator: validateName,
+                    hintText: 'productd_order_message'.tr,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 3,
+                    onSaved: (v) {},
+                    onChanged: (v) {},
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
+      actions: [
+        MyCustomButton(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          text: 'productd_order_cancel'.tr,
+        ),
+        MyCustomButton(
+          onTap: _sendData,
+          text: 'productd_order'.tr,
+        ),
+      ],
     );
   }
 
   _sendData() async {
-    final form = _formKey.currentState;
+    final form = _key.currentState;
     // final scaffold = Scaffold.of(context);
     if (form.validate()) {
       form.save();
       await widget.state.orderProduct(
-        savedName,
-        savedPhone,
-        savedPhone,
+        _nameController.text,
+        _phoneController.text,
+        _messageController.text,
       );
       Navigator.of(context).pop();
     }

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lomaysowda/pages/search/component/results.dart';
 
-import 'component/results.dart';
-import 'component/suggestions.dart';
-
-class Searchdelegate extends SearchDelegate {
-  Searchdelegate()
+class MySearchDelegate extends SearchDelegate {
+  MySearchDelegate()
       : super(
-          searchFieldLabel: 'search_bar_label'.tr,
+          searchFieldLabel: 'search_hint'.tr,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.search,
         );
@@ -16,16 +14,6 @@ class Searchdelegate extends SearchDelegate {
   ThemeData appBarTheme(BuildContext context) {
     assert(context != null);
     final ThemeData theme = Theme.of(context);
-    // ThemeData(
-    //   primaryColor: Theme.of(context).canvasColor,
-    //   inputDecorationTheme: InputDecorationTheme(
-    //     hintStyle: Theme.of(context).textTheme.headline6.copyWith(
-    //           fontSize: 16,
-    //           color: Theme.of(context).accentColor.withOpacity(0.5),
-    //         ),
-    //   ),
-    //   textTheme:
-    // );
     assert(theme != null);
     return theme;
   }
